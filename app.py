@@ -1,19 +1,206 @@
+# # Importing Required Libraries
+# import streamlit as st
+# from dom_generator import generate_dom_code
+# import os
+# import pathlib
+# import shutil
+
+# # Create the directory for generated websites if it doesn't exist
+# OUTPUT_DIR = "generated_websites"
+# pathlib.Path(OUTPUT_DIR).mkdir(exist_ok=True)
+
+
+# # Utility function to refresh the app in order to delete the files once created
+# def refresh_app(base_dir):
+#     for item in os.listdir(base_dir):
+#         item_path = os.path.join(base_dir, item)
+#         if os.path.isdir(item_path) and item == "node_modules":
+#             continue
+#         if os.path.isdir(item_path):
+#             shutil.rmtree(item_path)
+#         else:
+#             os.remove(item_path)
+
+
+# # Streamlit App Configuration
+# st.set_page_config(page_title="Website Generator", layout="wide")
+# st.title("AI Website Builder")
+
+# # Custom CSS for better button styling
+# st.markdown(
+#     """
+#     <style>
+#     .stButton>button {
+#         width: 100%;
+#         border-radius: 9999px;
+#         background-color: #2563eb;
+#         color: white;
+#         font-weight: bold;
+#         transition: background-color 0.2s;
+#     }
+#     .stButton>button:hover {
+#         background-color: #1e40af;
+#     }
+
+#     .stTextArea textarea {
+#         background-color: #100b40;
+#         border: 2px solid #ccc;
+#         border-radius: 10px;
+#         padding: 10px;
+#         font-size: 18px;
+#         color: #fffcfc;
+#     }
+#     .stTextArea textarea:focus {
+#         border-color: #2563eb;
+#         box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+#     }
+
+#     .stTabs [data-testid="stTabContent"] {
+#         font-size: 20px; 
+#     }
+#     .stTabs [data-testid="stTab"] {
+#         font-size: 20px;
+#         font-weight: bold;
+#     }
+
+#     .word-count-container {
+#         position: relative;
+#     }
+#     .word-count {
+#         position: absolute;
+#         top: 5px;
+#         right: 15px;
+#         color: #888;
+#         font-size: 12px;
+#         pointer-events: none;
+#         background-color: transparent;
+#         z-index: 10;
+#     }
+#     </style>
+#     """,
+#     unsafe_allow_html=True,
+# )
+
+# # Word Count State Management
+# if "prompt" not in st.session_state:
+#     st.session_state.prompt = ""
+#     st.session_state.word_count = 0
+
+
+# def update_word_count():
+#     words = st.session_state.prompt.strip().split()
+#     st.session_state.word_count = len(words)
+
+
+# # User Input Section
+# st.header("Describe Your Website Idea here")
+
+# with st.container():
+#     prompt = st.text_area(
+#         "Enter a detailed description of the website you want to build",
+#         key="prompt",
+#         on_change=update_word_count,
+#         placeholder="Enter your prompt here...",
+#     )
+#     current_word_count = st.session_state.word_count
+#     max_words = 600
+
+#     count_color = "red" if current_word_count > max_words else "gray"
+#     st.markdown(
+#         f'<div class="word-count-container"><div class="word-count" style="color:{count_color};">{current_word_count}/{max_words} words</div></div>',
+#         unsafe_allow_html=True,
+#     )
+
+#     if current_word_count > max_words:
+#         st.warning(f"Word count exceeds the limit of {max_words}.")
+
+# # Horizontal Buttons
+# col1, col2 = st.columns([2, 1])
+
+# with col1:
+#     if st.button("Generate Website", disabled=(current_word_count > max_words)):
+#         if prompt:
+#             log_placeholder = st.empty()
+#             st.divider()
+
+#             project_dir = OUTPUT_DIR
+#             generated_dir = None
+
+#             for log in generate_dom_code(prompt, project_dir):
+#                 with log_placeholder.container():
+#                     st.info(log)
+#                 generated_dir = log
+
+#             if generated_dir and "Error" not in generated_dir:
+#                 st.write(f"Project generated successfully in `{OUTPUT_DIR}`")
+
+#                 app_jsx_path = os.path.join(project_dir, "src", "App.jsx")
+
+#                 # Place code and preview side by side
+#                 code_col, preview_col = st.columns([1, 1])
+
+#                 with code_col:
+#                     st.markdown("### App.jsx Code")
+#                     if os.path.exists(app_jsx_path):
+#                         with open(app_jsx_path, "r") as file:
+#                             app_jsx_code = file.read()
+#                         st.code(app_jsx_code, language="jsx")
+#                     else:
+#                         st.warning("App.jsx file not found in the generated project.")
+
+#                 with preview_col:
+#                     st.markdown("### Live Preview")
+#                     st.info(
+#                         "To view the website, you need to run a local web server (e.g., `npm start` or `npx serve`) in the generated project directory."
+#                     )
+#                     st.markdown(
+#                         f'<iframe src="https://aedd6b2cbcfe.ngrok-free.app" style="height:500px;width:100%;border:none;"></iframe>',
+#                         unsafe_allow_html=True,
+#                     )
+
+#             else:
+#                 st.error("Failed to generate the project. Please check the logs above for details.")
+#         else:
+#             st.warning("Please enter a prompt to generate a website.")
+
+# with col2:
+#     if st.button("Refresh"):
+#         try:
+#             refresh_app(OUTPUT_DIR)
+#             st.success("Page Refreshed")
+#         except Exception as e:
+#             st.error(f"Failed to refresh projects: {e}")
+
+
+#########################################################################################
+
 # Importing Required Libraries
 import streamlit as st
 from dom_generator import generate_dom_code
 import os
 import pathlib
-import time
+import shutil
 
 # Create the directory for generated websites if it doesn't exist
 OUTPUT_DIR = "generated_websites"
-pathlib.Path(OUTPUT_DIR).mkdir(exist_ok = True)
+pathlib.Path(OUTPUT_DIR).mkdir(exist_ok=True)
+
+# Utility function to refresh the app in order to delete the files once created
+def refresh_app(base_dir):
+    for item in os.listdir(base_dir):
+        item_path = os.path.join(base_dir, item)
+        if os.path.isdir(item_path) and item == "node_modules":
+            continue
+        if os.path.isdir(item_path):
+            shutil.rmtree(item_path)
+        else:
+            os.remove(item_path)
 
 # Streamlit App Configuration
-st.set_page_config(page_title = "Website Generator", layout = "wide")
+st.set_page_config(page_title="Website Generator", layout="wide")
 st.title("AI Website Builder")
 
-# Custom CSS for better button styling
+# Custom CSS
 st.markdown(
     """
     <style>
@@ -24,30 +211,23 @@ st.markdown(
         color: white;
         font-weight: bold;
         transition: background-color 0.2s;
+        margin-bottom: 10px;
     }
     .stButton>button:hover {
         background-color: #1e40af;
     }
 
     .stTextArea textarea {
-        background-color: #100b40; /* Light gray background */
+        background-color: #100b40;
         border: 2px solid #ccc;
         border-radius: 10px;
         padding: 10px;
         font-size: 18px;
-        color: #965d5d;
+        color: #fffcfc;
     }
     .stTextArea textarea:focus {
-        border-color: #2563eb; /* Blue border on focus */
+        border-color: #2563eb;
         box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
-    }
-
-    .stTabs [data-testid="stTabContent"] {
-        font-size: 20px; 
-    }
-    .stTabs [data-testid="stTab"] {
-        font-size: 20px;
-        font-weight: bold;
     }
 
     .word-count-container {
@@ -59,16 +239,17 @@ st.markdown(
         right: 15px;
         color: #888;
         font-size: 12px;
-        pointer-events: none; /* Make the label unclickable */
+        pointer-events: none;
         background-color: transparent;
         z-index: 10;
     }
-
     </style>
-    """, unsafe_allow_html = True)
+    """,
+    unsafe_allow_html=True,
+)
 
-# NEW WORD COUNT LOGIC
-if 'prompt' not in st.session_state:
+# Word Count State Management
+if "prompt" not in st.session_state:
     st.session_state.prompt = ""
     st.session_state.word_count = 0
 
@@ -79,69 +260,77 @@ def update_word_count():
 # User Input Section
 st.header("Describe Your Website Idea here")
 
-# Wrap the text area in a container for custom positioning
 with st.container():
     prompt = st.text_area(
         "Enter a detailed description of the website you want to build",
         key="prompt",
         on_change=update_word_count,
-        placeholder="Enter your prompt here..."
+        placeholder="Enter your prompt here...",
     )
-    # Get the word count from session state
     current_word_count = st.session_state.word_count
     max_words = 600
 
-    # Display the word count using a markdown element with custom CSS class
     count_color = "red" if current_word_count > max_words else "gray"
-    st.markdown(f'<div class="word-count-container"><div class="word-count" style="color:{count_color};">{current_word_count}/{max_words} words</div></div>', unsafe_allow_html=True)
+    st.markdown(
+        f'<div class="word-count-container"><div class="word-count" style="color:{count_color};">{current_word_count}/{max_words} words</div></div>',
+        unsafe_allow_html=True,
+    )
 
-    # Enforce word limit by disabling the button
     if current_word_count > max_words:
         st.warning(f"Word count exceeds the limit of {max_words}.")
 
-# Generate Website Button
-if st.button("Generate Website", disabled=(current_word_count > max_words)):
+# Buttons vertically stacked
+generate_clicked = st.button("Generate Website", disabled=(current_word_count > max_words))
+refresh_clicked = st.button("Refresh")
+
+if generate_clicked:
     if prompt:
         log_placeholder = st.empty()
         st.divider()
 
-        # Create a unique directory for this project
         project_dir = OUTPUT_DIR
-
-        # Display live logs from the generator and get the final result
         generated_dir = None
+
         for log in generate_dom_code(prompt, project_dir):
             with log_placeholder.container():
                 st.info(log)
-            # The last yielded value is the path of the generated directory
             generated_dir = log
 
         if generated_dir and "Error" not in generated_dir:
-            st.write(f"Project generated successfully in `{OUTPUT_DIR}`")
-            st.write(f"Your project is located at: `{OUTPUT_DIR}`")
+            st.success(f"Project generated successfully in `{OUTPUT_DIR}`")
 
-            # Define the path to the App.jsx file
-            app_jsx_path = os.path.join(project_dir, 'src', 'App.jsx')
-            
-            # Create the tabs for code and preview
-            code_tab, preview_tab = st.tabs(["Code", "Preview"])
+            app_jsx_path = os.path.join(project_dir, "src", "App.jsx")
 
-            with code_tab:
+            # Split into 2 columns (50-50)
+            code_col, preview_col = st.columns(2)
+
+            with code_col:
                 st.markdown("### App.jsx Code")
                 if os.path.exists(app_jsx_path):
-                    with open(app_jsx_path, 'r') as file:
+                    with open(app_jsx_path, "r") as file:
                         app_jsx_code = file.read()
-                    st.code(app_jsx_code, language='jsx')
+                    # Scrollable code block
+                    st.code(app_jsx_code, language="jsx")
                 else:
                     st.warning("App.jsx file not found in the generated project.")
-            
-            with preview_tab:
-                st.markdown("### Live Preview")
-                st.info("To view the website, you need to run a local web server (e.g., `npm start` or `npx serve`) in the generated project directory and then access it from a browser. " \
-                "Streamlit doesn't execute the project directly.")
-                st.markdown(f'<iframe src="https://53ff5145c5b7.ngrok-free.app/" style="height:500px;width:100%;"></iframe>', unsafe_allow_html=True)
 
+            with preview_col:
+                st.markdown("### Live Preview")
+                st.info(
+                    "To view the website, you need to run a local web server (e.g., `npm start` or `npx serve`) in the generated project directory."
+                )
+                st.markdown(
+                    f'<iframe src="https://aedd6b2cbcfe.ngrok-free.app" style="height:500px;width:100%;border:none;"></iframe>',
+                    unsafe_allow_html=True, # https://aedd6b2cbcfe.ngrok-free.app
+                )
         else:
             st.error("Failed to generate the project. Please check the logs above for details.")
     else:
         st.warning("Please enter a prompt to generate a website.")
+
+if refresh_clicked:
+    try:
+        refresh_app(OUTPUT_DIR)
+        st.success("Page Refreshed")
+    except Exception as e:
+        st.error(f"Failed to refresh projects: {e}")
