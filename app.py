@@ -140,9 +140,6 @@ if generate_clicked:
 
             with preview_col:
                 st.markdown("### Live Preview")
-                st.info(
-                    "To view the website, you need to run a local web server (e.g., `npm start` or `npx serve`) in the generated project directory."
-                )
                 st.markdown(
                     f'<iframe src="https://aedd6b2cbcfe.ngrok-free.app" style="height:500px;width:100%;border:none;"></iframe>',
                     unsafe_allow_html=True, # https://aedd6b2cbcfe.ngrok-free.app
@@ -157,4 +154,5 @@ if refresh_clicked:
         refresh_app(OUTPUT_DIR)
         st.success("Page Refreshed")
     except Exception as e:
+
         st.error(f"Failed to refresh projects: {e}")
