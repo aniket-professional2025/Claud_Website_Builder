@@ -6,7 +6,11 @@ This project is created by using the Claud's Sonnet 3.7 model using python. Diff
 
 ### Handling React Files
 In general, no handle react & tailwind css files (in .jsx and .css and .html, .js), node modules are required. Thats why we need to go to the directory where the project folders are generated and then run the following commands:
-` npm i
-npm run dev
+
+`bash 
+  npm i
+  npm run dev
+
+  
 
 
