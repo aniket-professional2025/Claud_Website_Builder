@@ -23,3 +23,8 @@ ngrok config add-authtoken <token> # To add your token
 ngrok http 5173 # To get a link from the localhost
 ```
 Once, we run the last code, the localhost:5173 will open in a link like <https://aedd6b2cbcfe.ngrok-free.app> and this link can be put as the entry point in the streamlit app.
+
+### Modifications and Future Inspiration
+Currently, this approach has some issues. They need to be addressed and solved accordingly. They are - 
+* Currently it is using streamlit. However, Lovable.dev uses a dedicated deployment server which makes the code and website render process more attractive
+* The API (Claud Sonnet 3.7) is hallucinating some times. Sometimes, it is not generating the App.jsx file, sometimes it is not generating the required .jsx files to create the components or sometimes the components are not properly created. To solve this some methods are needed to be adapted
